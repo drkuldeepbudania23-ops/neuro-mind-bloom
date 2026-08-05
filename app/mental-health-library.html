@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Mental Health Library by Neuro Mind Bloom – easy information on depression, anxiety, OCD, addiction, sleep, child psychiatry and sexual health." />
+  <title>Mental Health Library | Neuro Mind Bloom</title>
+
+  <style>
+    :root{
+      --primary:#2f6f73;
+      --primary-dark:#214f52;
+      --accent:#e8f5f3;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --white:#ffffff;
+      --border:#dbe7e5;
+      --danger:#b42318;
+      --shadow:0 10px 28px rgba(25,60,63,.10);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:#f7fbfa;
+      line-height:1.6;
+    }
+
+    a{text-decoration:none;color:inherit}
+
+    .topbar{
+      background:var(--primary-dark);
+      color:#fff;
+      text-align:center;
+      padding:8px 15px;
+      font-size:14px;
+    }
+
+    header{
+      background:#fff;
+      position:sticky;
+      top:0;
+      z-index:1000;
+      box-shadow:0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .nav{
+      max-width:1180px;
+      margin:auto;
+      padding:14px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .brand{
+      font-size:22px;
+      font-weight:700;
+      color:var(--primary-dark);
+    }
+
+    .brand span{color:var(--primary)}
+
+    .nav-links{
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
+      font-size:15px;
+      font-weight:600;
+    }
+
+    .nav-links a:hover{color:var(--primary)}
+
+    .hero{
+      background:linear-gradient(135deg,#e8f5f3,#ffffff);
+      padding:70px 20px 55px;
+      text-align:center;
+      border-bottom:1px solid var(--border);
+    }
+
+    .hero h1{
+      margin:0 0 14px;
+      font-size:clamp(34px,5vw,56px);
+      color:var(--primary-dark);
+    }
+
+    .hero p{
+      max-width:760px;
+      margin:0 auto 26px;
+      color:var(--muted);
+      font-size:18px;
+    }
+
+    .search-wrap{
+      max-width:760px;
+      margin:auto;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    #searchInput{
+      flex:1;
+      min-width:260px;
+      padding:15px 18px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      font-size:16px;
+      outline:none;
+      background:#fff;
+    }
+
+    #searchInput:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 4px rgba(47,111,115,.10);
+    }
+
+    .container{
+      max-width:1180px;
+      margin:auto;
+      padding:45px 20px 70px;
+    }
+
+    .filters{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:30px;
+      justify-content:center;
+    }
+
+    .filter-btn{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--primary-dark);
+      padding:10px 15px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover{
+      background:var(--primary);
+      color:#fff;
+      border-color:var(--primary);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      min-height:230px;
+      transition:.25s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 16px 36px rgba(25,60,63,.15);
+    }
+
+    .tag{
+      display:inline-block;
+      width:max-content;
+      background:var(--accent);
+      color:var(--primary-dark);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:12px;
+    }
+
+    .card h3{
+      margin:0 0 10px;
+      color:var(--primary-dark);
+      font-size:21px;
+    }
+
+    .card p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+      flex-grow:1;
+    }
+
+    .read-btn{
+      display:inline-block;
+      text-align:center;
+      background:var(--primary);
+      color:#fff;
+      padding:11px 15px;
+      border-radius:10px;
+      font-weight:700;
+    }
+
+    .read-btn:hover{background:var(--primary-dark)}
+
+    .notice{
+      margin-top:42px;
+      background:#fff8f7;
+      border-left:5px solid var(--danger);
+      padding:20px;
+      border-radius:12px;
+      color:#5f2120;
+    }
+
+    .cta{
+      margin-top:35px;
+      background:var(--primary-dark);
+      color:#fff;
+      border-radius:20px;
+      padding:30px 24px;
+      text-align:center;
+    }
+
+    .cta h2{margin-top:0}
+    .cta p{color:#d9eeee}
+
+    .cta-buttons{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:18px;
+    }
+
+    .cta a{
+      padding:12px 18px;
+      border-radius:10px;
+      font-weight:700;
+    }
+
+    .btn-light{
+      background:#fff;
+      color:var(--primary-dark);
+    }
+
+    .btn-outline{
+      border:1px solid #fff;
+      color:#fff;
+    }
+
+    footer{
+      background:#183f42;
+      color:#d9eeee;
+      text-align:center;
+      padding:24px 15px;
+      font-size:14px;
+    }
+
+    .no-result{
+      display:none;
+      text-align:center;
+      color:var(--muted);
+      padding:35px 10px;
+      font-size:18px;
+    }
+
+    .whatsapp{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      background:#25D366;
+      color:#fff;
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:25px;
+      box-shadow:0 8px 25px rgba(0,0,0,.25);
+      z-index:1000;
+    }
+
+    @media(max-width:780px){
+      .nav{flex-direction:column}
+      .nav-links{justify-content:center}
+      .hero{padding-top:45px}
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    Online Mental Health Consultation | Confidential & Professional Support
+  </div>
+
+  <header>
+    <nav class="nav">
+      <a href="index.html" class="brand">Neuro <span>Mind Bloom</span></a>
+
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#services">Services</a>
+        <a href="mental-health-library.html">Mental Health Library</a>
+        <a href="index.html#appointment">Book Appointment</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Mental Health Library</h1>
+    <p>
+      Simple, reliable and patient-friendly information about common mental health,
+      addiction, sleep, child psychiatry and sexual health concerns.
+    </p>
+
+    <div class="search-wrap">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search: depression, anxiety, OCD, addiction..."
+        aria-label="Search mental health topics"
+      />
+    </div>
+  </section>
+
+  <main class="container">
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="mood">Mood</button>
+      <button class="filter-btn" data-filter="anxiety">Anxiety</button>
+      <button class="filter-btn" data-filter="ocd">OCD</button>
+      <button class="filter-btn" data-filter="psychosis">Psychosis</button>
+      <button class="filter-btn" data-filter="addiction">Addiction</button>
+      <button class="filter-btn" data-filter="child">Child Psychiatry</button>
+      <button class="filter-btn" data-filter="sexual-health">Sexual Health</button>
+      <button class="filter-btn" data-filter="sleep-stress">Sleep & Stress</button>
+    </div>
+
+    <div class="grid" id="libraryGrid">
+
+      <article class="card" data-category="mood" data-title="depression sadness low mood">
+        <span class="tag">Mood Disorder</span>
+        <h3>Depression</h3>
+        <p>Persistent sadness, loss of interest, low energy, sleep changes and negative thoughts.</p>
+        <a class="read-btn" href="articles/depression.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="mood" data-title="bipolar disorder mania depression">
+        <span class="tag">Mood Disorder</span>
+        <h3>Bipolar Disorder</h3>
+        <p>Episodes of depression and abnormally elevated or irritable mood called mania or hypomania.</p>
+        <a class="read-btn" href="articles/bipolar-disorder.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="anxiety" data-title="anxiety gad worry tension">
+        <span class="tag">Anxiety</span>
+        <h3>Generalized Anxiety</h3>
+        <p>Excessive worry, restlessness, body tension, poor sleep and difficulty controlling anxious thoughts.</p>
+        <a class="read-btn" href="articles/generalized-anxiety.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="anxiety" data-title="panic attack fear palpitations">
+        <span class="tag">Anxiety</span>
+        <h3>Panic Attacks</h3>
+        <p>Sudden episodes of intense fear with palpitations, breathlessness, trembling or fear of dying.</p>
+        <a class="read-btn" href="articles/panic-attacks.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="ocd" data-title="ocd obsessive compulsive disorder">
+        <span class="tag">OCD</span>
+        <h3>Obsessive Compulsive Disorder</h3>
+        <p>Repeated unwanted thoughts and repetitive acts such as checking, washing or counting.</p>
+        <a class="read-btn" href="articles/ocd.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="psychosis" data-title="schizophrenia voices suspiciousness psychosis">
+        <span class="tag">Psychosis</span>
+        <h3>Schizophrenia</h3>
+        <p>Hallucinations, suspiciousness, disorganized behaviour and changes in social or occupational functioning.</p>
+        <a class="read-btn" href="articles/schizophrenia.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="addiction" data-title="alcohol addiction dependence">
+        <span class="tag">Addiction</span>
+        <h3>Alcohol Addiction</h3>
+        <p>Loss of control over drinking, craving, tolerance, withdrawal and continued use despite harm.</p>
+        <a class="read-btn" href="articles/alcohol-addiction.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="addiction" data-title="tobacco nicotine smoking addiction">
+        <span class="tag">Addiction</span>
+        <h3>Tobacco & Nicotine Addiction</h3>
+        <p>Dependence on cigarettes, bidi, chewing tobacco, nicotine products or repeated smoking urges.</p>
+        <a class="read-btn" href="articles/tobacco-addiction.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="addiction" data-title="opioid heroin smack doda addiction">
+        <span class="tag">Addiction</span>
+        <h3>Opioid Addiction</h3>
+        <p>Dependence on heroin, smack, opium, doda or prescription opioids with craving and withdrawal.</p>
+        <a class="read-btn" href="articles/opioid-addiction.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="addiction" data-title="gaming addiction internet mobile">
+        <span class="tag">Behavioural Addiction</span>
+        <h3>Gaming Addiction</h3>
+        <p>Loss of control over gaming, neglect of responsibilities and continued use despite problems.</p>
+        <a class="read-btn" href="articles/gaming-addiction.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="addiction" data-title="gambling disorder betting">
+        <span class="tag">Behavioural Addiction</span>
+        <h3>Gambling Disorder</h3>
+        <p>Repeated betting or gambling that causes financial, family, emotional or occupational harm.</p>
+        <a class="read-btn" href="articles/gambling-disorder.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="child" data-title="adhd child attention hyperactivity">
+        <span class="tag">Child Psychiatry</span>
+        <h3>ADHD</h3>
+        <p>Persistent inattention, hyperactivity or impulsivity affecting school, home and social functioning.</p>
+        <a class="read-btn" href="articles/adhd.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="child" data-title="autism child communication behavior">
+        <span class="tag">Child Psychiatry</span>
+        <h3>Autism Spectrum Disorder</h3>
+        <p>Difficulties in social communication with restricted or repetitive patterns of behaviour.</p>
+        <a class="read-btn" href="articles/autism.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="child" data-title="specific learning disorder dyslexia child">
+        <span class="tag">Child Psychiatry</span>
+        <h3>Specific Learning Disorder</h3>
+        <p>Persistent difficulty in reading, writing or mathematics despite adequate opportunity to learn.</p>
+        <a class="read-btn" href="articles/specific-learning-disorder.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="sexual-health" data-title="erectile dysfunction sexual health">
+        <span class="tag">Sexual Health</span>
+        <h3>Erectile Dysfunction</h3>
+        <p>Persistent difficulty in achieving or maintaining an erection sufficient for satisfactory sexual activity.</p>
+        <a class="read-btn" href="articles/erectile-dysfunction.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="sexual-health" data-title="premature ejaculation sexual health">
+        <span class="tag">Sexual Health</span>
+        <h3>Premature Ejaculation</h3>
+        <p>Ejaculation occurring earlier than desired, causing distress or relationship difficulty.</p>
+        <a class="read-btn" href="articles/premature-ejaculation.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="sleep-stress" data-title="insomnia sleep problem">
+        <span class="tag">Sleep</span>
+        <h3>Insomnia</h3>
+        <p>Difficulty falling asleep, staying asleep or waking too early with daytime impairment.</p>
+        <a class="read-btn" href="articles/insomnia.html">Read Article</a>
+      </article>
+
+      <article class="card" data-category="sleep-stress" data-title="stress burnout relaxation">
+        <span class="tag">Stress</span>
+        <h3>Stress & Burnout</h3>
+        <p>Emotional exhaustion, irritability, poor concentration and reduced functioning due to prolonged stress.</p>
+        <a class="read-btn" href="articles/stress-burnout.html">Read Article</a>
+      </article>
+
+    </div>
+
+    <div class="no-result" id="noResult">
+      No matching topic found.
+    </div>
+
+    <div class="notice">
+      <strong>Important:</strong> This information is for education only and does not replace a personal medical consultation.
+      In case of suicidal thoughts, severe agitation, violence risk, confusion, overdose or medical emergency, contact the nearest emergency service immediately.
+    </div>
+
+    <section class="cta">
+      <h2>Need a confidential online consultation?</h2>
+      <p>Book an appointment with Dr. Kuldeep Singh, MD Psychiatry.</p>
+
+      <div class="cta-buttons">
+        <a href="index.html#appointment" class="btn-light">Book Appointment</a>
+        <a href="https://wa.me/91XXXXXXXXXX?text=Hello%20Doctor%2C%20I%20want%20to%20book%20an%20online%20consultation." class="btn-outline" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </section>
+
+  </main>
+
+  <a
+    class="whatsapp"
+    href="https://wa.me/91XXXXXXXXXX?text=Hello%20Doctor%2C%20I%20want%20to%20book%20an%20online%20consultation."
+    target="_blank"
+    rel="noopener"
+    aria-label="Chat on WhatsApp"
+  >☏</a>
+
+  <footer>
+    © 2026 Neuro Mind Bloom. All rights reserved.
+  </footer>
+
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const cards = document.querySelectorAll(".card");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const noResult = document.getElementById("noResult");
+
+    let activeCategory = "all";
+
+    function filterCards() {
+      const query = searchInput.value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const category = card.dataset.category;
+        const title = card.dataset.title.toLowerCase();
+        const text = card.innerText.toLowerCase();
+
+        const categoryMatch =
+          activeCategory === "all" || category === activeCategory;
+
+        const searchMatch =
+          title.includes(query) || text.includes(query);
+
+        if (categoryMatch && searchMatch) {
+          card.style.display = "flex";
+          visibleCount++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      noResult.style.display = visibleCount === 0 ? "block" : "none";
+    }
+
+    searchInput.addEventListener("input", filterCards);
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        activeCategory = button.dataset.filter;
+        filterCards();
+      });
+    });
+  </script>
+
+</body>
+</html>
