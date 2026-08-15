@@ -86,11 +86,62 @@ I understand that this is only an appointment request and the final slot will be
     );
   }, [form]);
 
- async function submitBooking(event: FormEvent<HTMLFormElement>) {
+async function submitBooking(event: FormEvent<HTMLFormElement>) {
   event.preventDefault();
 
   if (!form.consent) {
     alert("Please accept the consent and privacy statement.");
+    return;
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    alert("Supabase URL or key is missing.");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/appointments`,
+      {
+        method: "POST",
+        headers: {
+          apikey: supabaseKey,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          patient_name: form.name,
+          mobile: form.phone,
+          service: form.service,
+          appointment_date: form.date,
+          appointment_time: form.time,
+          message: form.concern || null,
+          status: "pending",
+        }),
+      }
+    );
+
+    const result = await response.text();
+
+    if (!response.ok) {
+      alert(`Booking error: ${response.status} - ${result}`);
+      return;
+    }
+
+    alert("Appointment booked successfully!");
+
+    window.open(
+      `${whatsappBase}?text=${appointmentMessage}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  } catch (error) {
+    alert(`Booking error: ${String(error)}`);
+  }
+}
     return;
   }
 
