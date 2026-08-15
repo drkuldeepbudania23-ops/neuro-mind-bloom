@@ -14,338 +14,213 @@ export default function PrescriptionPage() {
   const [medicines, setMedicines] = useState("");
   const [advice, setAdvice] = useState("");
   const [followUp, setFollowUp] = useState("");
-  const [amount, setAmount] = useState("500");
-  const [paymentStatus, setPaymentStatus] = useState("pending");
-  const [message, setMessage] = useState("");
-  const [saving, setSaving] = useState(false);
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  async function savePrescription() {
-    const token = localStorage.getItem("doctor_access_token");
-
-    if (!token) {
-      setMessage("Doctor login expired. Please login again.");
-      return;
-    }
-
-    if (!url || !key) {
-      setMessage("Supabase configuration missing.");
-      return;
-    }
-
-    if (!diagnosis.trim() && !medicines.trim()) {
-      setMessage("Please enter diagnosis or medicines.");
-      return;
-    }
-
-    setSaving(true);
-    setMessage("Saving prescription...");
-
-    try {
-      const prescriptionResponse = await fetch(
-        `${url}/rest/v1/prescriptions`,
-        {
-          method: "POST",
-          headers: {
-            apikey: key,
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Prefer: "return=representation",
-          },
-          body: JSON.stringify({
-            appointment_id: appointmentId
-              ? Number(appointmentId)
-              : null,
-            patient_name: patientName,
-            mobile: mobile || null,
-            diagnosis: diagnosis.trim() || null,
-            medicines: medicines.trim() || null,
-            advice: advice.trim() || null,
-            follow_up_date: followUp || null,
-          }),
-        }
-      );
-
-      const prescriptionText = await prescriptionResponse.text();
-
-      if (!prescriptionResponse.ok) {
-        setMessage(`Prescription error: ${prescriptionText}`);
-        return;
-      }
-
-      const paymentResponse = await fetch(
-        `${url}/rest/v1/payments`,
-        {
-          method: "POST",
-          headers: {
-            apikey: key,
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal",
-          },
-          body: JSON.stringify({
-            appointment_id: appointmentId
-              ? Number(appointmentId)
-              : null,
-            amount: amount ? Number(amount) : 0,
-            payment_status: paymentStatus,
-          }),
-        }
-      );
-
-      if (!paymentResponse.ok) {
-        const paymentText = await paymentResponse.text();
-        setMessage(
-          `Prescription saved, but payment status failed: ${paymentText}`
-        );
-        return;
-      }
-
-      setMessage("Prescription and payment status saved successfully.");
-    } catch (error) {
-      setMessage(`Error: ${String(error)}`);
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  function printPrescription() {
+  const printPrescription = () => {
     window.print();
-  }
-
-  const fieldStyle = {
-    width: "100%",
-    boxSizing: "border-box" as const,
-    padding: "11px",
-    marginTop: "6px",
-    marginBottom: "15px",
-    border: "1px solid #cbdedd",
-    borderRadius: "8px",
-    fontSize: "15px",
   };
 
   return (
     <main
       style={{
         minHeight: "100vh",
-        background: "#f4faf9",
-        padding: "30px 20px",
-        fontFamily: "Arial, Helvetica, sans-serif",
-        color: "#173737",
+        background: "#f4f7fb",
+        padding: "30px 15px",
+        fontFamily: "Arial, sans-serif",
       }}
     >
       <div
         style={{
-          maxWidth: 820,
+          maxWidth: "850px",
           margin: "0 auto",
           background: "white",
-          padding: 30,
-          borderRadius: 14,
-          border: "1px solid #dcebea",
+          borderRadius: "16px",
+          padding: "30px",
+          boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
         }}
       >
-        <div id="prescription">
-          <div
+        <div
+          style={{
+            textAlign: "center",
+            borderBottom: "2px solid #0f766e",
+            paddingBottom: "18px",
+            marginBottom: "25px",
+          }}
+        >
+          <h1
             style={{
-              borderBottom: "2px solid #087f7f",
-              paddingBottom: 15,
-              marginBottom: 20,
+              margin: 0,
+              color: "#0f766e",
+              fontSize: "30px",
             }}
           >
-            <h1
-              style={{
-                marginBottom: 5,
-                color: "#087f7f",
-              }}
-            >
-              Neuro Mind Bloom
-            </h1>
+            Neuro Mind Bloom
+          </h1>
 
-            <p style={{ margin: 0 }}>
-              Dr. Kuldeep Budania
-              <br />
-              MD Psychiatry
-              <br />
-              Ajmer, Rajasthan
-            </p>
-          </div>
-
-          <h2>E-Prescription</h2>
-
-          <div
+          <h2
             style={{
-              background: "#f7fbfb",
-              padding: 15,
-              borderRadius: 10,
-              marginBottom: 20,
+              margin: "10px 0 5px",
+              fontSize: "22px",
             }}
           >
-            <p>
-              <b>Patient:</b> {patientName || "-"}
-            </p>
+            Dr. Kuldeep Budania
+          </h2>
 
-            <p>
-              <b>Mobile:</b> {mobile || "-"}
-            </p>
+          <p style={{ margin: "4px 0", fontWeight: "bold" }}>
+            MD Psychiatry
+          </p>
 
-            <p>
-              <b>Appointment ID:</b> {appointmentId || "-"}
-            </p>
-          </div>
+          <p style={{ margin: "4px 0", color: "#555" }}>
+            Mental Health • De-addiction • Sexual Disorders
+          </p>
 
-          <label>
-            Diagnosis
-            <textarea
-              rows={3}
-              style={fieldStyle}
-              value={diagnosis}
-              onChange={(e) => setDiagnosis(e.target.value)}
-              placeholder="Enter diagnosis / provisional diagnosis"
-            />
-          </label>
-
-          <label>
-            Rx / Medicines
-            <textarea
-              rows={9}
-              style={fieldStyle}
-              value={medicines}
-              onChange={(e) => setMedicines(e.target.value)}
-              placeholder={`Example:
-Tab. Escitalopram 10 mg
-1 tablet once daily after breakfast
-Duration: 30 days
-
-Tab. Clonazepam 0.25 mg
-1 tablet at bedtime
-Duration: 7 days`}
-            />
-          </label>
-
-          <label>
-            Advice
-            <textarea
-              rows={4}
-              style={fieldStyle}
-              value={advice}
-              onChange={(e) => setAdvice(e.target.value)}
-              placeholder="Sleep hygiene, avoid alcohol, counselling advice, investigations, etc."
-            />
-          </label>
-
-          <label>
-            Follow-up Date
-            <input
-              type="date"
-              style={fieldStyle}
-              value={followUp}
-              onChange={(e) => setFollowUp(e.target.value)}
-            />
-          </label>
-
-          <div
-            style={{
-              marginTop: 25,
-              paddingTop: 20,
-              borderTop: "1px solid #dcebea",
-            }}
-          >
-            <h3>Payment</h3>
-
-            <label>
-              Amount ₹
-              <input
-                type="number"
-                min="0"
-                style={fieldStyle}
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </label>
-
-            <label>
-              Payment Status
-              <select
-                style={fieldStyle}
-                value={paymentStatus}
-                onChange={(e) => setPaymentStatus(e.target.value)}
-              >
-                <option value="pending">Pending</option>
-                <option value="paid">Paid</option>
-                <option value="refunded">Refunded</option>
-              </select>
-            </label>
-          </div>
+          <p style={{ margin: "4px 0", color: "#555" }}>
+            E-Prescription
+          </p>
         </div>
 
-        {message && (
-          <div
+        <section
+          style={{
+            background: "#f8fafc",
+            padding: "18px",
+            borderRadius: "10px",
+            marginBottom: "25px",
+          }}
+        >
+          <h3 style={{ marginTop: 0 }}>Patient Details</h3>
+
+          <p>
+            <strong>Name:</strong> {patientName || "Not provided"}
+          </p>
+
+          <p>
+            <strong>Mobile:</strong> {mobile || "Not provided"}
+          </p>
+
+          <p>
+            <strong>Appointment ID:</strong>{" "}
+            {appointmentId || "Not available"}
+          </p>
+
+          <p>
+            <strong>Date:</strong> {new Date().toLocaleDateString("en-IN")}
+          </p>
+        </section>
+
+        <section style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>Diagnosis / Clinical Impression</label>
+
+          <textarea
+            value={diagnosis}
+            onChange={(e) => setDiagnosis(e.target.value)}
+            placeholder="Enter diagnosis or clinical impression"
+            style={textAreaStyle}
+          />
+        </section>
+
+        <section style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>Rx / Medicines</label>
+
+          <textarea
+            value={medicines}
+            onChange={(e) => setMedicines(e.target.value)}
+            placeholder={
+              "Example:\nTab. Medicine 10 mg – 1 tablet at night × 10 days"
+            }
             style={{
-              marginTop: 20,
-              padding: 12,
-              background: "#eef8f7",
-              border: "1px solid #bddedb",
-              borderRadius: 8,
-              overflowWrap: "anywhere",
+              ...textAreaStyle,
+              minHeight: "180px",
             }}
-          >
-            {message}
-          </div>
-        )}
+          />
+        </section>
+
+        <section style={{ marginBottom: "20px" }}>
+          <label style={labelStyle}>Advice</label>
+
+          <textarea
+            value={advice}
+            onChange={(e) => setAdvice(e.target.value)}
+            placeholder="Enter investigations, precautions or other advice"
+            style={textAreaStyle}
+          />
+        </section>
+
+        <section style={{ marginBottom: "25px" }}>
+          <label style={labelStyle}>Follow-up</label>
+
+          <input
+            type="text"
+            value={followUp}
+            onChange={(e) => setFollowUp(e.target.value)}
+            placeholder="Example: Follow-up after 2 weeks"
+            style={{
+              width: "100%",
+              padding: "13px",
+              border: "1px solid #cbd5e1",
+              borderRadius: "8px",
+              fontSize: "16px",
+              boxSizing: "border-box",
+            }}
+          />
+        </section>
 
         <div
           style={{
             display: "flex",
-            gap: 10,
+            gap: "12px",
             flexWrap: "wrap",
-            marginTop: 20,
+            marginTop: "30px",
           }}
         >
-          <button
-            onClick={savePrescription}
-            disabled={saving}
-            style={buttonStyle}
-          >
-            {saving ? "Saving..." : "Save Prescription"}
-          </button>
-
           <button
             onClick={printPrescription}
             style={buttonStyle}
           >
-            Print / Save PDF
+            Print / Save Prescription
           </button>
+        </div>
 
-          <a
-            href="/doctor"
-            style={linkStyle}
-          >
-            Back to Dashboard
-          </a>
+        <div
+          style={{
+            marginTop: "35px",
+            paddingTop: "20px",
+            borderTop: "1px solid #ddd",
+            textAlign: "right",
+          }}
+        >
+          <strong>Dr. Kuldeep Budania</strong>
+          <br />
+          <span>MD Psychiatry</span>
         </div>
       </div>
     </main>
   );
 }
 
-const buttonStyle = {
-  padding: "12px 16px",
-  border: 0,
-  borderRadius: 8,
-  background: "#087f7f",
-  color: "white",
-  fontWeight: 700,
-  cursor: "pointer",
+const labelStyle = {
+  display: "block",
+  fontWeight: "bold",
+  marginBottom: "8px",
+  fontSize: "16px",
 };
 
-const linkStyle = {
-  display: "inline-block",
-  padding: "12px 16px",
-  borderRadius: 8,
-  border: "1px solid #087f7f",
-  color: "#087f7f",
-  textDecoration: "none",
-  fontWeight: 700,
+const textAreaStyle = {
+  width: "100%",
+  minHeight: "110px",
+  padding: "13px",
+  border: "1px solid #cbd5e1",
+  borderRadius: "8px",
+  fontSize: "16px",
+  resize: "vertical" as const,
+  boxSizing: "border-box" as const,
+};
+
+const buttonStyle = {
+  background: "#0f766e",
+  color: "white",
+  border: "none",
+  padding: "13px 22px",
+  borderRadius: "8px",
+  fontSize: "16px",
+  fontWeight: "bold",
+  cursor: "pointer",
 };
