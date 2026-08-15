@@ -105,11 +105,12 @@ I understand that this is only an appointment request and the final slot will be
   try {
     const response = await fetch(`${supabaseUrl}/rest/v1/appointments`, {
       method: "POST",
-      headers: {
-        apikey: supabaseKey,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal",
-      },
+     headers: {
+  apikey: supabaseKey,
+  Authorization: `Bearer ${supabaseKey}`,
+  "Content-Type": "application/json",
+  Prefer: "return=minimal",
+},
       body: JSON.stringify({
         patient_name: form.name,
         mobile: form.phone,
