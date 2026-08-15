@@ -86,20 +86,60 @@ I understand that this is only an appointment request and the final slot will be
     );
   }, [form]);
 
-  function submitBooking(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+ async function submitBooking(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
 
-    if (!form.consent) {
-      alert("Please accept the consent and privacy statement.");
+  if (!form.consent) {
+    alert("Please accept the consent and privacy statement.");
+    return;
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    alert("Booking service is not configured yet.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${supabaseUrl}/rest/v1/appointments`, {
+      method: "POST",
+      headers: {
+        apikey: supabaseKey,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        patient_name: form.name,
+        mobile: form.phone,
+        service: form.service,
+        appointment_date: form.date,
+        appointment_time: form.time,
+        message: form.concern || null,
+        status: "pending",
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Supabase booking error:", errorText);
+      alert("Booking could not be saved. Please try again.");
       return;
     }
+
+    alert("Appointment request submitted successfully.");
 
     window.open(
       `${whatsappBase}?text=${appointmentMessage}`,
       "_blank",
       "noopener,noreferrer"
     );
+  } catch (error) {
+    console.error("Booking error:", error);
+    alert("Something went wrong. Please try again.");
   }
+}
 
   return (
     <main>
