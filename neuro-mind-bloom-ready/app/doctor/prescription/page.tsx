@@ -1,19 +1,24 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function PrescriptionPage() {
-  const params = useSearchParams();
-
-  const appointmentId = params.get("id") || "";
-  const patientName = params.get("name") || "";
-  const mobile = params.get("mobile") || "";
+  const [appointmentId, setAppointmentId] = useState("");
+  const [patientName, setPatientName] = useState("");
+  const [mobile, setMobile] = useState("");
 
   const [diagnosis, setDiagnosis] = useState("");
   const [medicines, setMedicines] = useState("");
   const [advice, setAdvice] = useState("");
   const [followUp, setFollowUp] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    setAppointmentId(params.get("id") || "");
+    setPatientName(params.get("name") || "");
+    setMobile(params.get("mobile") || "");
+  }, []);
 
   function printPrescription() {
     window.print();
@@ -46,7 +51,13 @@ export default function PrescriptionPage() {
             marginBottom: "25px",
           }}
         >
-          <h1 style={{ margin: 0, color: "#0f766e", fontSize: "30px" }}>
+          <h1
+            style={{
+              margin: 0,
+              color: "#0f766e",
+              fontSize: "30px",
+            }}
+          >
             Neuro Mind Bloom
           </h1>
 
@@ -62,7 +73,13 @@ export default function PrescriptionPage() {
             Mental Health • De-addiction • Sexual Disorders
           </p>
 
-          <p style={{ margin: "8px 0 0", color: "#0f766e" }}>
+          <p
+            style={{
+              margin: "8px 0 0",
+              color: "#0f766e",
+              fontWeight: 600,
+            }}
+          >
             E-Prescription
           </p>
         </header>
@@ -78,11 +95,13 @@ export default function PrescriptionPage() {
           <h3 style={{ marginTop: 0 }}>Patient Details</h3>
 
           <p>
-            <strong>Name:</strong> {patientName || "Not provided"}
+            <strong>Name:</strong>{" "}
+            {patientName || "Not provided"}
           </p>
 
           <p>
-            <strong>Mobile:</strong> {mobile || "Not provided"}
+            <strong>Mobile:</strong>{" "}
+            {mobile || "Not provided"}
           </p>
 
           <p>
@@ -110,18 +129,25 @@ export default function PrescriptionPage() {
         </section>
 
         <section style={{ marginBottom: "20px" }}>
-          <label style={labelStyle}>Rx / Medicines</label>
+          <label style={labelStyle}>
+            Rx / Medicines
+          </label>
 
           <textarea
             value={medicines}
             onChange={(e) => setMedicines(e.target.value)}
             placeholder="Enter medicines, dose, frequency and duration"
-            style={{ ...textAreaStyle, minHeight: "180px" }}
+            style={{
+              ...textAreaStyle,
+              minHeight: "180px",
+            }}
           />
         </section>
 
         <section style={{ marginBottom: "20px" }}>
-          <label style={labelStyle}>Advice</label>
+          <label style={labelStyle}>
+            Advice
+          </label>
 
           <textarea
             value={advice}
@@ -132,7 +158,9 @@ export default function PrescriptionPage() {
         </section>
 
         <section style={{ marginBottom: "25px" }}>
-          <label style={labelStyle}>Follow-up</label>
+          <label style={labelStyle}>
+            Follow-up
+          </label>
 
           <input
             type="text"
@@ -143,7 +171,10 @@ export default function PrescriptionPage() {
           />
         </section>
 
-        <button onClick={printPrescription} style={buttonStyle}>
+        <button
+          onClick={printPrescription}
+          style={buttonStyle}
+        >
           Print / Save Prescription
         </button>
 
